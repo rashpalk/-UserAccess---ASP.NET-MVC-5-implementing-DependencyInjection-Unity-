@@ -1,0 +1,297 @@
+﻿@model BGS_UserAceesApp.ViewModels.HomeIndexViewModel
+@{
+    ViewBag.Title = "Home";
+}
+
+
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.js">
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function ($) {
+
+        if ("@Model.Permission.ToLower()" == "read only access" || "@Model.Permission.ToLower()" == "full access") {
+
+            var tbl = '';
+            tbl += '<table class="table table-hover">'
+
+            //--->create table header > start
+            tbl += '<thead>';
+            tbl += '<tr>';
+            tbl += '<th>User Id</th>';
+            tbl += '<th>Surname</th>';
+            tbl += '<th>Prefrerred</th>';
+            tbl += '<th>Modified On</th>';
+            tbl += '<th>Modified By</th>';
+            if ("@Model.Permission.ToLower()" == "full access") {
+                   tbl += '<th>Action</th>';}
+            tbl += '</tr>';
+            tbl += '</thead>';
+            //--->create table header > end
+
+
+            //--->create table body > start
+            tbl += '<tbody>';
+
+            //--->If data is available check
+            if (@Model.UsersModel.Count()> 0) {
+                var model = @Html.Raw(Json.Encode(Model.UsersModel));
+                $.each(model, function (index, val) {
+
+                    //loop through each row
+                    tbl += '<tr row_id="' + val['RowId'] + '">';
+                    tbl += '<td ><div c edit_type="click" col_name="UserID">' + val['UserId'] + '</div></td>';
+                    tbl += '<td ><div class="row_data" edit_type="click" col_name="Surname">' + val['Surname'] + '</div></td>';
+                    tbl += '<td ><div class="row_data" edit_type="click" col_name="PrefferedName">' + val['PrefferedName'] + '</div></td>';
+                    tbl += '<td ><div  edit_type="click" col_name="ModifiedOn">' + ToJavaScriptDate(val['ModifiedOn']) + '</div></td>';
+                    tbl += '<td ><div  edit_type="click" col_name="ModifiedBy">' + val['ModifiedBy'] + '</div></td>';
+
+
+                    if ("@Model.Permission.ToLower()" == "full access") {
+                    //--->edit options > start
+                    tbl += '<td>';
+                    tbl += '<span class="btn_edit" > <a href="#" class="btn btn-link " row_id="' + val['RowId'] + '" > Edit</a> </span>';
+
+                    //only show this button if edit button is clicked
+                    tbl += '<span class="btn_save"> <a href="#" class="btn btn-link"  row_id="' + val['RowId'] + '"> Save</a> | </span>';
+                    tbl += '<span class="btn_cancel"> <a href="#" class="btn btn-link" row_id="' + val['RowId'] + '"> Cancel</a> | </span>';
+                    tbl += '<span class="btn_delete"> <a href="#" class="btn btn-link" row_id="' + val['RowId'] + '"> Delete</a>  </span>';
+                    tbl += '</td>';
+                    //--->edit options > end
+                     }
+                    tbl += '</tr>';
+                });
+
+
+             //--->create table body rows > end
+
+                tbl += '</tbody>';
+                //--->create table body > end
+
+                tbl += '</table>'
+                //--->create data table > end
+
+                //output table data
+                $(document).find('.tbl_user_data').html(tbl);
+
+                $(document).find('.btn_save').hide();
+                $(document).find('.btn_cancel').hide();
+
+
+                //--->button > edit > start
+                $(document).on('click', '.btn_edit', function (event) {
+                    event.preventDefault();
+                    var tbl_row = $(this).closest('tr');
+
+                    var row_id = tbl_row.attr('row_id');
+
+                    tbl_row.find('.btn_save').show();
+                    tbl_row.find('.btn_cancel').show();
+
+                    //hide edit button
+                    tbl_row.find('.btn_edit').hide();
+
+                    //make the whole row editable
+                    tbl_row.find('.row_data')
+                        .attr('contenteditable', 'true')
+                        .attr('edit_type', 'button')
+                        .addClass('bg-warning')
+                        .css('padding', '3px')
+
+                    //--->add the original entry > start
+                    tbl_row.find('.row_data').each(function (index, val) {
+                        //this will help in case user decided to click on cancel button
+                        $(this).attr('original_entry', $(this).html());
+                    });
+                    //--->add the original entry > end
+
+                });
+                //--->button > edit > end
+
+
+                //--->button > cancel > start
+                $(document).on('click', '.btn_cancel', function (event) {
+                    event.preventDefault();
+
+                    var tbl_row = $(this).closest('tr');
+
+                    var row_id = tbl_row.attr('row_id');
+
+                    //hide save and cacel buttons
+                    tbl_row.find('.btn_save').hide();
+                    tbl_row.find('.btn_cancel').hide();
+
+                    //show edit button
+                    tbl_row.find('.btn_edit').show();
+
+                    //make the whole row editable
+                    tbl_row.find('.row_data')
+                        .attr('edit_type', 'click')
+                        .removeClass('bg-warning')
+                        .css('padding', '')
+
+                    tbl_row.find('.row_data').each(function (index, val) {
+                        $(this).html($(this).attr('original_entry'));
+                    });
+                });
+                //--->button > cancel > end
+
+
+                //--->save whole row entery > start
+                $(document).on('click', '.btn_save', function (event) {
+                    event.preventDefault();
+                    var tbl_row = $(this).closest('tr');
+
+                    var row_id = tbl_row.attr('row_id');
+
+
+                    //hide save and cacel buttons
+                    tbl_row.find('.btn_save').hide();
+                    tbl_row.find('.btn_cancel').hide();
+
+                    //show edit button
+                    tbl_row.find('.btn_edit').show();
+
+
+                    //make the whole row editable
+                    tbl_row.find('.row_data')
+                        .attr('edit_type', 'click')
+                        .removeClass('bg-warning')
+                        .css('padding', '')
+
+                    //--->get row data > start
+                    var arr = {};
+                    tbl_row.find('.row_data').each(function (index, val) {
+                        var col_name = $(this).attr('col_name');
+                        var col_val = $(this).html();
+                        arr[col_name] = col_val;
+                    });
+                    //--->get row data > end
+
+                   //ajax call
+
+                    var userModel = {};
+                    userModel.RowId = row_id;
+                    userModel.Surname = tbl_row.find(`[col_name='Surname']`).html();
+                    userModel.PrefferedName = tbl_row.find(`[col_name='PrefferedName']`).html();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/UpdateTAUser",
+                        data: '{userModel:' + JSON.stringify(userModel) + '}',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data == row_id) {
+                                location.reload(true);
+                                alert("Record Updated Successfully");
+                            }
+                            else
+                                alert("Unable to update the record, please try again later");
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+                    });                  
+
+
+                });
+                //--->save whole row entery > end
+
+
+                 //--->delete row  > start
+
+                $(document).on('click', '.btn_delete', function (event) {
+                    event.preventDefault();
+
+                    var value = confirm("Are you sure you want to delete the row?");
+                    if (value == true) {
+                        var tbl_row = $(this).closest('tr');
+
+                        var row_id = tbl_row.attr('row_id');
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/DeleteTAUser",
+                            data: '{recordId:' + row_id + '}',
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                if (data == row_id) {
+                                    tbl_row.remove();
+                                    alert("Record deleted Successfully");
+                                }
+                                else
+                                    alert("Unable to delete the record, please try again later");
+                            }
+                        });
+
+                    } else {
+                        //alert("You pressed Cancel!");
+                    }
+                });
+
+                //--->delete row  > start
+
+                // function to get the date in appropriate format
+                function ToJavaScriptDate(value) {
+                    var pattern = /Date\(([^)]+)\)/;
+                    var results = pattern.exec(value);
+                    var dt = new Date(parseFloat(results[1]));
+                    //return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+                    return (dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + formatAMPM(dt));
+                }
+
+
+                function formatAMPM(date) {
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    var ampm = hours >= 12 ? 'pm' : 'am';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    minutes = minutes < 10 ? '0' + minutes : minutes;
+                    var strTime = hours + ':' + minutes + ' ' + ampm;
+                    return strTime;
+                }
+
+
+
+            }
+            else {
+
+                tbl += '<tr>';
+                tbl += '<td colspan="6" align="center" >No Record Available</td>';
+                tbl += '</tr>';
+                tbl += '</tbody>';
+                //--->create table body > end
+
+                tbl += '</table>'
+                //--->create data table > end
+
+                //out put table data
+                $(document).find('.tbl_user_data').html(tbl);
+            }
+
+        }
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b> Username: </b> @Model.Username</div>
+    <div class="panel-heading"><b> Permission: </b>  @Model.Permission </div>
+    @if (Model.Permission.ToLower() == "no access")
+    {
+        <div class="panel-heading"><b> Message: </b>  You currently do not have permission to access the contents</div>
+    }
+    else
+    {
+        <div class="panel-body">
+            <div class="tbl_user_data">
+                @*data is populated here*@
+            </div>
+        </div>
+    }
+</div>
+
+
+

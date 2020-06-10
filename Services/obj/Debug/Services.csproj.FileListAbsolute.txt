@@ -1,0 +1,9 @@
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\bin\Debug\Services.dll
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\bin\Debug\Services.pdb
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\bin\Debug\DAL.dll
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\bin\Debug\DAL.pdb
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\obj\Debug\Services.csprojAssemblyReference.cache
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\obj\Debug\Services.csproj.CoreCompileInputs.cache
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\obj\Debug\Services.csproj.CopyComplete
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\obj\Debug\Services.dll
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\Services\obj\Debug\Services.pdb

@@ -1,0 +1,6 @@
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\DAL\bin\Debug\DAL.dll
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\DAL\bin\Debug\DAL.pdb
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\DAL\obj\Debug\DAL.csproj.CoreCompileInputs.cache
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\DAL\obj\Debug\DAL.dll
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\DAL\obj\Debug\DAL.pdb
+C:\Users\rkaur\source\repos\BGS-UserAceesApp\DAL\obj\Debug\DAL.csprojAssemblyReference.cache
