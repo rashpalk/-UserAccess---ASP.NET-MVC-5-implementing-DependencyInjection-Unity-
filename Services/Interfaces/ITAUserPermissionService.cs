@@ -7,6 +7,6 @@ namespace Services
 {
    public interface ITAUserPermissionService
     {
-        string GetTAUserPermission(string username);
+        Permissions GetTAUserPermission(string username);
     }
 }

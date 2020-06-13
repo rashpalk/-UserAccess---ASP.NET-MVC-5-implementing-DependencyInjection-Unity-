@@ -30,13 +30,13 @@ namespace DAL
             ModifiedBy = reader["ModifiedBy"].ToString();
         }
 
-        public static List<TAUser> GetTAUser()
+        public static List<TAUser> GetTAUsers()
         {
             try
             {
                 List<TAUser> TAUsers = new List<TAUser>();
 
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString))
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["BGSConnectionString"].ConnectionString))
                 {
                     string sql = "select * from TAUser order by RowID";
                     using (SqlCommand cmd = new SqlCommand(sql, con))
@@ -64,6 +64,41 @@ namespace DAL
                // Log the exception here
             }
         }
+        public static List<TAUser> GetTAUserById(int? rowId)
+        {
+            try
+            {
+                List<TAUser> TAUsers = new List<TAUser>();
+
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["BGSConnectionString"].ConnectionString))
+                {
+                    string sql = "select * from TAUser where RowID = " + rowId;
+                    using (SqlCommand cmd = new SqlCommand(sql, con))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        con.Open();
+                        using (IDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TAUsers.Add(
+                                    new TAUser(reader)
+                                );
+                            }
+                        }
+
+                    }
+                }
+                return TAUsers;
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                return null;
+                // Log the exception here
+            }
+        }
+
         public int? UpdateTAUser()
         {
             try
@@ -119,7 +154,7 @@ namespace DAL
 
         private string GetConnectionString()
         {
-            return ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString;
+            return ConfigurationManager.ConnectionStrings["BGSConnectionString"].ConnectionString;
         }
     }
 }

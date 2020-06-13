@@ -24,24 +24,24 @@ namespace BGS_UserAceesApp.Controllers
         public ActionResult Index()
         {
             HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel();
-            GetData(homeIndexViewModel);
+            GetTAUserData(homeIndexViewModel);
             return View(homeIndexViewModel);
         }
 
-        private void GetData(HomeIndexViewModel homeIndexViewModel)
+        private void GetTAUserData(HomeIndexViewModel homeIndexViewModel)
         {
             homeIndexViewModel.Username = Environment.UserDomainName + "\\" + Environment.UserName;
-            string permission = _tAUserPermissionService.GetTAUserPermission(Environment.UserName);
-            if (!string.IsNullOrWhiteSpace(permission) && (permission == "r" || permission == "f"))
+            Permissions permissions = _tAUserPermissionService.GetTAUserPermission(Environment.UserName);
+            if (permissions == Permissions.ReadOnly || permissions == Permissions.FullAccess)
             {
-                if (permission.ToLower() == "r")
+                if (permissions == Permissions.ReadOnly)
                     homeIndexViewModel.Permission = "Read Only Access";
-                else if (permission.ToLower() == "f")
+                else if (permissions == Permissions.FullAccess)
                     homeIndexViewModel.Permission = "Full Access";
                 else
                     homeIndexViewModel.Permission = "";
 
-                List<TAUser> tAUsers = _tAUserService.GetTAUser();
+                List<TAUser> tAUsers = _tAUserService.GetTAUsers();
                 if (tAUsers.Count > 0)
                 {
 
@@ -66,11 +66,40 @@ namespace BGS_UserAceesApp.Controllers
         }
 
         [HttpPost]
-        public int? UpdateTAUser(UserModel userModel)
+        public JsonResult UpdateTAUser(UserModel userModel)
         {
             int? rowId = _tAUserService.UpdateTAUser(userModel.RowId, userModel.Surname, userModel.PrefferedName, Environment.UserName);
-            return rowId;
-        }       
+
+            if (rowId != -1)
+            {
+                TAUser tAUser = new TAUser();
+
+                UserModel updatedUserModel = new UserModel();
+
+                tAUser = GetDataById(userModel.RowId);
+                updatedUserModel.RowId = tAUser.RowId;
+                updatedUserModel.UserId = tAUser.UserId;
+                updatedUserModel.Surname = tAUser.Surname;
+                updatedUserModel.PrefferedName = tAUser.PrefferedName;
+                updatedUserModel.ModifiedOn = tAUser.ModifiedOn;
+                updatedUserModel.ModifiedBy = tAUser.ModifiedBy;
+                return Json(updatedUserModel, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var data = new
+                {
+                    RowId = rowId
+                };
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private TAUser GetDataById(int? rowId)
+        {
+            return _tAUserService.GetTAUserById(rowId);
+        }
 
         [HttpPost]
         public int? DeleteTAUser(int? recordId)

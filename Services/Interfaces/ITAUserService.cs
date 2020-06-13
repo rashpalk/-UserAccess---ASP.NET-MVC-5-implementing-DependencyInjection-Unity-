@@ -7,7 +7,8 @@ namespace Services
 {
    public interface ITAUserService
     {
-        List<TAUser> GetTAUser();
+        List<TAUser> GetTAUsers();
+        TAUser GetTAUserById(int? rowId);
         int? UpdateTAUser(int? rowId, string surname, string prefferedName, string loggedOnUserName);
         int? DeleteTAUser(int? rowId);
     }

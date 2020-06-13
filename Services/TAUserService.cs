@@ -11,9 +11,13 @@ namespace Services
             _iTAUserRepo = iTAUserRepo;
         }
 
-        public List<TAUser> GetTAUser()
+        public List<TAUser> GetTAUsers()
         {
-            return _iTAUserRepo.GetTAUser();
+            return _iTAUserRepo.GetTAUsers();
+        }
+        public TAUser GetTAUserById(int? rowId)
+        {
+           return _iTAUserRepo.GetTAUserById(rowId)[0];
         }
         public int? UpdateTAUser(int? rowId, string surname, string prefferedName, string loggedOnUserName)
         {

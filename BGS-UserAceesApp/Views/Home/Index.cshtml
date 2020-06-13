@@ -182,15 +182,20 @@
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (data) {
-                            if (data == row_id) {
-                                location.reload(true);
-                                alert("Record Updated Successfully");
+                            if (data.RowId != -1) 
+                            {
+                                tbl_row.find(`[col_name='UserID']`).html(data.UserId);
+                                tbl_row.find(`[col_name='Surname']`).html(data.Surname);
+                                tbl_row.find(`[col_name='PrefferedName']`).html(data.PrefferedName);
+                                tbl_row.find(`[col_name='ModifiedOn']`).html(ToJavaScriptDate(data.ModifiedOn));
+                                tbl_row.find(`[col_name='ModifiedBy']`).html(data.ModifiedBy);
+                                //alert("Record Updated Successfully");
                             }
                             else
                                 alert("Unable to update the record, please try again later");
                         },
                         error: function (data) {
-                            alert(data);
+                            alert(jason.stringify(data));
                         }
                     });                  
 
@@ -219,7 +224,7 @@
                             success: function (data) {
                                 if (data == row_id) {
                                     tbl_row.remove();
-                                    alert("Record deleted Successfully");
+                                    //alert("Record deleted Successfully");
                                 }
                                 else
                                     alert("Unable to delete the record, please try again later");
@@ -242,7 +247,7 @@
                     return (dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + formatAMPM(dt));
                 }
 
-
+                //function to get time in 12 hour format with am and pm
                 function formatAMPM(date) {
                     var hours = date.getHours();
                     var minutes = date.getMinutes();
@@ -257,6 +262,7 @@
 
 
             }
+            // No records available in TAUser
             else {
 
                 tbl += '<tr>';

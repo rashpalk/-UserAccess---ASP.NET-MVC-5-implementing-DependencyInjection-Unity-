@@ -6,9 +6,13 @@ namespace DAL
 {
    public class TAUserRepo: ITAUserRepo
     {
-        public List<TAUser> GetTAUser()
+        public List<TAUser> GetTAUsers()
         {
-            return TAUser.GetTAUser();
+            return TAUser.GetTAUsers();
+        }
+        public List<TAUser> GetTAUserById(int? rowId)
+        {
+            return TAUser.GetTAUserById(rowId);
         }
         public int? UpdateTAUser(int? rowId, string surname, string prefferedName, string loggedOnUserName)
         {

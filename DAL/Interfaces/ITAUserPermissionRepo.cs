@@ -6,6 +6,6 @@ namespace DAL
 {
   public interface ITAUserPermissionRepo
     {
-        string GetTAUserPermission(string username);
+        Permissions GetTAUserPermission(string username);
     }
 }

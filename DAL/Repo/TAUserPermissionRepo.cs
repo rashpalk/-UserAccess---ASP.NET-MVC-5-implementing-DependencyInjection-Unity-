@@ -6,7 +6,7 @@ namespace DAL
 {
    public class TAUserPermissionRepo: ITAUserPermissionRepo
     {
-        public string GetTAUserPermission(string username)
+        public Permissions GetTAUserPermission(string username)
         {
             return TAUserPermission.GetTAUserPermission(username);
         }       
